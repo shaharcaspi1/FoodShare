@@ -23,6 +23,9 @@ export default function HomeScreen() {
             <Button title="Assign"
             onPress={() => navigation.navigate('Assign')}
             />
+            <Button title="Split"
+            onPress={() => navigation.navigate('Result')}
+            />
         </View>
     );
 }

@@ -1,11 +1,14 @@
 import React, { createContext, useContext, useState } from 'react';
-
+import { Person,Assignment, Extras,Item } from '../models/types';
+/*
 type Person = {id: string; name: string};
 type Item = {id: string; name: string; price: number; quantity: number};
 type Assignment = {
     itemId: string;
     shares: Record<string, number>;
 }
+*/
+
 
 type AppState = {
     people: Person[];
@@ -15,6 +18,7 @@ type AppState = {
     setItems: React.Dispatch<React.SetStateAction<Item[]>>;
     setAssignments: React.Dispatch<React.SetStateAction<Assignment[]>>;
 }
+
 
 const AppContext = createContext<AppState | null>(null);
 

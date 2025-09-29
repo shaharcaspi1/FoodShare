@@ -4,6 +4,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ItemsScreen from '../screens/ItemsScreen';
 import PeopleScreen from '../screens/PeopleScreen';
 import AssignScreen from '../screens/AssignScreen';
+import ResultScreen from '../screens/ResultScreen';
 
 
 export type RootStackParamList = {
@@ -11,6 +12,7 @@ export type RootStackParamList = {
     Items: undefined;
     People: undefined;
     Assign: undefined;
+    Result: undefined
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,6 +24,7 @@ export default function RootNavigator() {
             <Stack.Screen name="Items" component={ItemsScreen} />
             <Stack.Screen name="People" component={PeopleScreen} />
             <Stack.Screen name="Assign" component={AssignScreen} />
+            <Stack.Screen name="Result" component={ResultScreen} />
         </Stack.Navigator>
     );
 }

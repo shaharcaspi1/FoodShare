@@ -21,7 +21,6 @@ export default function AssignScreen() {
         assignments.find(item => item.itemId === itemId)
 
     const togglePerson = (itemId:string, PersonId:string) => {
-
         setAssignments(prev => {
 
             const existing = prev.find(item => item.itemId === itemId);
