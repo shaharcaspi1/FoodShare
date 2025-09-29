@@ -5,9 +5,13 @@ node_modules/
 
 # Expo
 .expo/
+.expo-shared/
 dist/
 web-build/
+build/
+coverage/
 expo-env.d.ts
+*.log
 
 # Native
 .kotlin/
@@ -28,10 +32,13 @@ yarn-error.*
 
 # macOS
 .DS_Store
+Thumbs.db
 *.pem
 
 # local env files
 .env*.local
+.env
+.env.*
 
 # typescript
 *.tsbuildinfo
