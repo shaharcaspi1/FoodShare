@@ -19,7 +19,9 @@ export default function HomeScreen() {
             <View />
             <Button title="Go to People"
             onPress={() => navigation.navigate('People')}
-            
+            />
+            <Button title="Assign"
+            onPress={() => navigation.navigate('Assign')}
             />
         </View>
     );
