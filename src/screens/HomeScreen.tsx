@@ -4,14 +4,23 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 
+
 export type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
+
+
 
 export default function HomeScreen() {
     const navigation = useNavigation<HomeScreenNavigationProp>();
     return (
         <View>
-            <Text>This is the Home Screen</Text>
-            <Button title="Go to Items" onPress={() => navigation.navigate('Items')} />
+            <Button title="Go to Items"
+            onPress={() => navigation.navigate('Items')}
+            />
+            <View />
+            <Button title="Go to People"
+            onPress={() => navigation.navigate('People')}
+            
+            />
         </View>
     );
 }
