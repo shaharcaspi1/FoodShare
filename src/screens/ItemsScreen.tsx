@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList} from 'react-native';
+import { View, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-native';
 import { useApp } from '../state/AppContext';
 
 
@@ -24,13 +24,16 @@ export default function ItemsScreen() {
     const addItem = () => {
         if (!valid) return;
         const newItem = {
-            id:'i'+String(items.length),
+            id: Date.now().toString(),
             name: itemName.trim(),
             price: numPrice,
             quantity: numQuantity
         };
-        setItems(prev => [...prev, newItem]);
-        
+        setItems(prev => [...prev, newItem]);   
+    }
+
+    const removeItem = (idRemove: string) => {
+        setItems(prev => prev.filter((item) => item.id !== idRemove))
     }
 
     /// return the screen with all the above implemented
@@ -72,7 +75,12 @@ export default function ItemsScreen() {
                 data = {items}
                 keyExtractor={(i) => i.id}
                 renderItem={({ item }) => (
-                    <Text>{item.name} - {item.quantity} * {item.price}</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 8 }}>
+                        <Text>{item.name} | {item.quantity} * {item.price}</Text>
+                        <TouchableOpacity onPress={() => removeItem(item.id)}>
+                            <Text style = {{color : 'red'}}> Remove </Text>
+                        </TouchableOpacity>
+                    </View>
                 )}
             />
 
