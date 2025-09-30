@@ -29,7 +29,10 @@ export default function ItemsScreen() {
             price: numPrice,
             quantity: numQuantity
         };
-        setItems(prev => [...prev, newItem]);   
+        setItems(prev => [...prev, newItem]);  
+        setItemName('');
+        setItemPrice('');
+        setItemQuantity('1'); 
     }
 
     const removeItem = (idRemove: string) => {
