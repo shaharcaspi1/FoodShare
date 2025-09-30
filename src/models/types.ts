@@ -7,4 +7,4 @@ export type Assignment = {
     shares: Record<string, number>;
 }
 
-export type Extras = {tip: number}
+export type Extras = string
