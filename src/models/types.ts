@@ -1,3 +1,4 @@
+// define types for global variables
 export type Person = {id: string; name: string};
 
 export type Item = {id: string; name: string; price: number; quantity: number};
@@ -7,4 +8,4 @@ export type Assignment = {
     shares: Record<string, number>;
 }
 
-export type Extras = {tip: number}
+export type Extras = string

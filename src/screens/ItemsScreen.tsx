@@ -4,15 +4,15 @@ import { useApp } from '../state/AppContext';
 
 
 export default function ItemsScreen() {
-    /// import the items and set items from context
+    // import the items and set items from context
     const { items, setItems } = useApp();
 
-    /// create useState arguments for inserting items to list
+    // create useState arguments for inserting items to list
     const [itemName, setItemName] = useState('');
     const [itemPrice, setItemPrice] = useState('');
     const [itemQuantity, setItemQuantity] = useState('1');
 
-    /// valid checks
+    // valid checks
     const validName = itemName.trim().length > 0;
     const numPrice = Number(itemPrice);
     const validPrice = !Number.isNaN(numPrice) && numPrice >= 0;
@@ -20,7 +20,7 @@ export default function ItemsScreen() {
     const validQuantity = !Number.isNaN(numQuantity) && numQuantity >= 1;
     const valid = validName && validPrice && validQuantity;
 
-    /// add new item to the list
+    // add new item to the list
     const addItem = () => {
         if (!valid) return;
         const newItem = {
@@ -34,12 +34,13 @@ export default function ItemsScreen() {
         setItemPrice('');
         setItemQuantity('1'); 
     }
-
+    
+    // remove item from the list
     const removeItem = (idRemove: string) => {
         setItems(prev => prev.filter((item) => item.id !== idRemove))
     }
 
-    /// return the screen with all the above implemented
+    // return the screen with all the above implemented
     return (
         <View style = {{flex:1, padding:16, gap:10}}>
             

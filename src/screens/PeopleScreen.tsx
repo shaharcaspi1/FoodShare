@@ -3,11 +3,16 @@ import { View, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-
 import { useApp } from '../state/AppContext';
 
 export default function PeopleScreen(){
+    // import people and setPeople from app context
     const {people, setPeople} = useApp();
+
+    // create name and setName to use in addPerson func
     const [name,setName] = useState("");
 
+    // check name valid
     const valid = name.trim().length > 0;
 
+    // add person to list
     const addPerson = () => {
         if (!valid) return;
         const newPerson = {
@@ -19,10 +24,12 @@ export default function PeopleScreen(){
         setName("");
     }
 
+    // remove person from list
     const removePerson = (idRemove: string) => {
         setPeople(prev => prev.filter(p => p.id !== idRemove))
     }
-
+    
+    // return screen
     return (
         <View style={{ flex:1, padding:16, gap:10}}>
                 <Text style={{fontSize:22}}>
