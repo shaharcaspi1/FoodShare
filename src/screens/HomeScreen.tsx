@@ -10,7 +10,7 @@ export default function HomeScreen() {
     const navigation = useNavigation<HomeScreenNavigationProp>();
     return (
         <View>
-            <Text>Home Screen</Text>
+            <Text>This is the Home Screen</Text>
             <Button title="Go to Items" onPress={() => navigation.navigate('Items')} />
         </View>
     );
