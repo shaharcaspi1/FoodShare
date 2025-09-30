@@ -4,23 +4,32 @@ import { View, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-
 import { useApp } from '../state/AppContext';
 
 export default function ResultScreen() {
+    // import global vars
     const {people, items, assignments, tip, setTip} = useApp();
+
+    // compute split using computeSplit from app logic
     const totals = computeSplit(people,items,assignments);
+
+    // create temporary tip useState variable
     const [tempTip,setTempTip] = useState(tip);
 
+    // crrate list with data
     const resultData = people.map(person => ({
         id: person.id,
         name: person.name,
         amount: totals[person.id] || 0
     }))
 
+    // create factor to add tip, and display data with tip factored
     const factor = 1 + (+tip || 0) / 100;
     const displayData = resultData.map(p => ({...p, amount: p.amount * factor}));
 
+    // check for valid tip and tempTip
     const numTip = Number(tip);
     const valid = !Number.isNaN(numTip) && numTip >= 0;
     const tempValid = !Number.isNaN(tempTip) && +tempTip >= 0;
 
+    // return screen
     return(
         <View style={{flex:1, padding:16, gap:10}}>
             <Text style={{fontSize:22}}>
