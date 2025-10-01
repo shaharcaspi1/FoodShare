@@ -52,7 +52,7 @@ export default function ResultScreen() {
              renderItem={({item}) =>(
                 <View style={{flexDirection:"row", alignItems:"center",justifyContent:"space-between",paddingVertical:8}}>
                     <Text style={{fontSize:16}}>{item.name}</Text>
-                    <Text style={{fontSize:16}}>${item.amount}</Text>
+                    <Text style={{fontSize:16}}>${item.amount.toFixed(0)}</Text>
                 </View>
              )}>
             </FlatList>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-native';
 import { useApp } from '../state/AppContext';
+import { styles } from '../models/styles'
 
 export default function PeopleScreen(){
     // import people and setPeople from app context
@@ -31,31 +32,31 @@ export default function PeopleScreen(){
     
     // return screen
     return (
-        <View style={{ flex:1, padding:16, gap:10}}>
-                <Text style={{fontSize:22}}>
+        <View style={styles.peopleParent}>
+                <Text style={styles.header}>
                     Add Friends
                 </Text>
                 <TextInput
                     placeholder = "Enter Friend's name"
                     value = {name}
                     onChangeText={setName}
-                    style = {{borderWidth:1, padding:8, borderRadius:6}}
+                    style = {styles.textInputStyle}
                 />
             <Button title='Add friend' onPress={addPerson} disabled={!valid} />
 
-            <Text style={{fontSize:22}}>
+            <Text style={styles.header}>
                 Friends list
             </Text>
 
             <FlatList
-                style = {{marginTop:10 }}
+                style = {styles.flatListStyle}
                 data = {people}
                 keyExtractor={(p) => p.id}
                 renderItem={({ item }) => (
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 8 }}>
-                        <Text style={{fontSize:16}}>{item.name}</Text>
+                    <View style={styles.flatListRenderItem}>
+                        <Text style={styles.text}>{item.name}</Text>
                         <TouchableOpacity onPress={() => removePerson(item.id)}>
-                            <Text style={{color: "red"}}>Remove</Text>
+                            <Text style={{color:"red"}}>Remove</Text>
                         </TouchableOpacity>
                     </View>
                 )
