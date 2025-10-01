@@ -117,8 +117,10 @@ export default function ItemsScreen() {
                 keyExtractor={(i) => i.id}
                 renderItem={({ item }) => (
                     <View>
+                        {/* items list */}
                         <View style={styles.flatListRenderItem}>
                             <Text>{item.name} | {item.quantity} * {item.price}</Text>
+                            {/* edit button */}
                             <TouchableOpacity
                             onPress={() => {
                                 const check = editingId === item.id ? null : item.id;
@@ -132,10 +134,14 @@ export default function ItemsScreen() {
                             >
                                 <Text style={{color:'blue'}}>{editingId === item.id ? 'Close' : 'Edit'}</Text>
                             </TouchableOpacity>
+
+                            {/* remove button */}
                             <TouchableOpacity onPress={() => removeItem(item.id)}>
                                 <Text style={{color:'red'}}>Remove</Text>
                             </TouchableOpacity>
                         </View>
+
+                        {/* edit button expanded*/}
                         {editingId === item.id && (
                                 <View style={{paddingVertical:8, gap:6}}>
                                     <TextInput
@@ -173,8 +179,9 @@ export default function ItemsScreen() {
                     </View>
                 )}
             />
+        {/* total */}
         <Text style={styles.text}>
-            total = {totalSum}
+            Total = {totalSum}
         </Text>
         </View>
     );
