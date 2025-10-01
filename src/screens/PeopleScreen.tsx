@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-native';
+import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Pressable} from 'react-native';
 import { useApp } from '../state/AppContext';
 import { styles } from '../models/styles'
 
@@ -40,7 +40,7 @@ export default function PeopleScreen(){
                     placeholder = "Enter Friend's name"
                     value = {name}
                     onChangeText={setName}
-                    style = {styles.textInputStyle}
+                    style = {{borderWidth:1, padding:8, borderRadius:6}}
                 />
             <Button title='Add friend' onPress={addPerson} disabled={!valid} />
 
