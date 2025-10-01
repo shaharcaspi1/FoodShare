@@ -23,10 +23,6 @@ export default function HomeScreen() {
     const splitVaild = (people.length !== 0 && items.length !== 0 && assignments.length == items.length);
     
 
-    console.log(items.length)
-    console.log(assignments.length)
-    console.log()
-
     // return home screen
     // right now button to each screen, UI to be changed
     return (
