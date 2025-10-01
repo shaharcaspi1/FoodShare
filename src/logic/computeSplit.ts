@@ -22,7 +22,7 @@ Record<string,number> {
         }
 
         // calculate each sharing part
-        const price = currentItem.price;
+        const price = currentItem.price * currentItem.quantity;
         const peopleAmount = Object.keys(a.shares).length;
 
         const priceForEach = price / peopleAmount;
