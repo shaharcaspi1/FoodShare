@@ -27,7 +27,7 @@ if (!GOOGLE_CREDS){
 }
 
 
-const client = new DocumentProcessorServiceClient();
+const client = new DocumentProcessorServiceClient({apiEndpoint:`${LOCATION}-documentai.googleapis.com`});
 
 app.get('/health', (_req: Request, res: Response) => {
     res.json({ok:true})
@@ -54,10 +54,13 @@ app.post('/process', upload.single('file'), async (req: Request, res: Response) 
         res.json({ document: result.document })
     } catch (err: any) {
         console.error('Document AI error:',err)
+        console.error('message:', err?.message);
+        console.error('code:', err?.code, 'details:', err?.details);
+        console.dir(err?.statusDetails, { depth: 10 });
         res.status(500).json({error: 'Failed to process document.'})
     }
 });
 
 app.listen(PORT, () => {
-    console.log('Backend listening on http://localhost:',{PORT});
+    console.log(`Backend listening on http://localhost:${PORT}`);
 })
