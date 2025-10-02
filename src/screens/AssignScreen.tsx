@@ -33,11 +33,12 @@ export default function AssignScreen() {
             const existing = prev.find(item => item.itemId === itemId);
             // if no one assigned => add the item to list, and return
             if (!existing) 
-                return [...prev,{itemId,shares: {[PersonId]:1}}];
+                return [...prev,{itemId,shares: {[PersonId]:true}}];
             
             // if item exist in list => create new list with that item that can be modified and copy all the other item as they are
             // this method aviod unnecessary renders
             const next = prev.map(item => (item.itemId === itemId ? {...item ,shares: {...item.shares}} : item));
+
             // find the item in the new list
             const target = next.find(item => item.itemId === itemId);
 
@@ -48,9 +49,10 @@ export default function AssignScreen() {
             // if person is sharing item => remove person
             if (target.shares[PersonId]) {
                 delete target.shares[PersonId];
+            
             // else => add person to sharing
             } else {
-                target.shares[PersonId] = 1;
+                target.shares[PersonId] = true;
             }
 
             // return new list with modification
