@@ -1,7 +1,8 @@
 import { computeSplit } from '../logic/computeSplit';
 import { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-native';
+import { View, Text, TextInput, Button, FlatList } from 'react-native';
 import { useApp } from '../state/AppContext';
+import { styles } from '../models/styles';
 
 export default function ResultScreen() {
     // import global vars
@@ -31,8 +32,8 @@ export default function ResultScreen() {
 
     // return screen
     return(
-        <View style={{flex:1, padding:16, gap:10}}>
-            <Text style={{fontSize:22}}>
+        <View style={styles.screenContainer}>
+            <Text style={styles.header}>
                 Split results
             </Text>
             <TextInput
@@ -40,23 +41,23 @@ export default function ResultScreen() {
                 value = {tempTip}
                 onChangeText={setTempTip}
                 keyboardType='numeric'
-                style={{borderWidth:1, padding:8, borderRadius:6}}
+                style={styles.textInputStyle}
             />
 
             <Button title='Add Tip' disabled={!(valid && tempValid)} onPress={() => setTip(tempTip)}/>
 
             <FlatList
-             style={{marginTop:10}}
+             style={styles.flatListStyle}
              data={displayData}
              keyExtractor={(p) => p.id}
              renderItem={({item}) =>(
-                <View style={{flexDirection:"row", alignItems:"center",justifyContent:"space-between",paddingVertical:8}}>
-                    <Text style={{fontSize:16}}>{item.name}</Text>
-                    <Text style={{fontSize:16}}>${item.amount.toFixed(0)}</Text>
+                <View style={styles.row}>
+                    <Text style={styles.text}>{item.name}</Text>
+                    <Text style={styles.text}>${item.amount.toFixed(0)}</Text>
                 </View>
              )}>
             </FlatList>
-            <Text style={{fontSize:16,fontWeight:"thin"}}>Added tip {tip}%</Text>
+            <Text style={styles.noteText}>Added tip {tip}%</Text>
         </View>
     )
 }

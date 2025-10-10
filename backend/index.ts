@@ -3,12 +3,15 @@ import express, { Request, Response } from "express";
 import cors from 'cors';
 import multer from 'multer';
 import { v1 as documentai } from '@google-cloud/documentai';
-import { error } from 'console';
+import { extractItemsFromEntities } from './docai-extract/extractItem';
+
 
 const { DocumentProcessorServiceClient } = documentai;
 
+
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
+
 
 app.use(cors());
 app.use(express.json());
@@ -33,7 +36,7 @@ app.get('/health', (_req: Request, res: Response) => {
     res.json({ok:true})
 });
 
-app.post('/process', upload.single('file'), async (req: Request, res: Response) =>{
+app.post('/api/receipt/extract', upload.single('file'), async (req: Request, res: Response) =>{
     try {
         if (!req.file){
             return res.status(400).json({error: 'Missing file field "file".'})
@@ -51,7 +54,8 @@ app.post('/process', upload.single('file'), async (req: Request, res: Response) 
         };
 
         const [result] = await client.processDocument(request as any);
-        res.json({ document: result.document })
+        const parsed = extractItemsFromEntities({document: result.document} as any);
+        res.json(parsed)
     } catch (err: any) {
         console.error('Document AI error:',err)
         console.error('message:', err?.message);

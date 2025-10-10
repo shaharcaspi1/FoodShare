@@ -19,15 +19,7 @@ type Item = { name: string; qty: number; price: number };
 type Extracted = { items: Item[] };
 
 
-
-// Fetch first sub-entity with a given type 
-function getProp(entity: DocAIEntity | undefined | null, type: string): DocAIEntity | null {
-    const props = entity?.properties ?? [];
-    if (!props) return null;
-    for (const prop of props) if (prop.type === type) return prop;
-    return null;
-}
-
+// main function to extract data from image
 export function extractItemsFromEntities(doc: DocAIResponse):Extracted {
     const entities = doc.document?.entities ?? [];
     const output: Extracted = {items:[]};
@@ -38,7 +30,7 @@ export function extractItemsFromEntities(doc: DocAIResponse):Extracted {
         if (e.type === "line_item") {
           const desc: string[] = [];
           
-          let qty: number | string |null = null;
+          let qty: number | string | null = null;
           let price: number | string | null = null;
           for (const p of e.properties ?? []) {
             if (!p) continue;

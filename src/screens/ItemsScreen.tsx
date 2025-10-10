@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-native';
+import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Alert, Image, ActivityIndicator} from 'react-native';
 import { useApp } from '../state/AppContext';
 import { styles } from '../models/styles'
 import { Item } from '../models/types';
+import { pickImage } from '../util/pickImage';
+import uploadReceipt from '../api/receipt';
 
 
 export default function ItemsScreen() {
@@ -77,13 +79,64 @@ export default function ItemsScreen() {
     // compute total sum
     const totalSum = items.reduce((current, it) => current + (it.price * it.quantity), 0);
     
+    // add from photo function
+    const [busy, setBusy] = useState<'idle'|'picking'|'uploading'|'parsing'>('idle');
+    const [previewUri, setPreviewUri] = useState<string | null>(null);
+
+    const onScanPress = async () => {
+        try {
+            setBusy('picking');
+            const picked = await pickImage();
+            if (!picked) {(setBusy('idle')); return;}
+            
+            setPreviewUri(picked);
+
+            setBusy('uploading');
+
+            setBusy('parsing');
+            const {items: parsed} = await uploadReceipt(picked)
+
+            const newScaned = parsed.map((i,index) =>({
+                id: Date.now().toString() + String(index),
+                name: i.name,
+                price: i.price,
+                quantity: i.qty,
+            }))
+            
+            setItems(prev => [...prev, ...newScaned]);
+
+            // for (const i of parsed) {
+            //     const newItem = {id: Date.now().toString(),
+            //                     name: i.name,
+            //                     price: i.price, 
+            //                     quantity: i.qty}
+            //     setItems(prev => [...prev, newItem]);
+            // }
+
+            Alert.alert('Imported', `Added ${parsed.length} item(s).`);
+            } catch (e: any) {
+                console.error(e);
+                Alert.alert('Import failed', e?.message ?? 'Unknown error');
+            } finally {
+                setBusy('idle');
+            }
+        }
+
+    
+
     // return the screen with all the above implemented
     return (
-        <View style = {{flex:1, padding:16, gap:10}}>
+        <View style={styles.screenContainer}>
             
-            <Text style={{fontSize: 22}}>
+            <Text style={styles.header}>
                 Add items
             </Text>
+
+            <Button title='Add from picture' onPress={onScanPress}/>
+            {busy !== 'idle' && <ActivityIndicator/>}
+            {previewUri && (
+                <Image source={{ uri: previewUri }} style={styles.previewImage} />
+            )}
 
             <TextInput 
             placeholder = 'Item name'
@@ -107,7 +160,7 @@ export default function ItemsScreen() {
 
             <Button title='Add Item' disabled={!valid} onPress={addItem}/>
 
-            <Text style={{fontSize: 22}}>
+            <Text style={styles.header}>
                 Items
             </Text>
 
@@ -119,63 +172,66 @@ export default function ItemsScreen() {
                     <View>
                         {/* items list */}
                         <View style={styles.flatListRenderItem}>
-                            <Text>{item.name} | {item.quantity} * {item.price}</Text>
-                            {/* edit button */}
-                            <TouchableOpacity
-                            onPress={() => {
-                                const check = editingId === item.id ? null : item.id;
-                                setEditingId(check);
-                                if (check){
-                                    setEditItemName(item.name);
-                                    setEditItemPrice(String(item.price));
-                                    setEditItemQuantity(String(item.quantity));
-                                }
-                            }}
-                            >
-                                <Text style={{color:'blue'}}>{editingId === item.id ? 'Close' : 'Edit'}</Text>
-                            </TouchableOpacity>
+                            <Text style={styles.listItemTitle} numberOfLines={1} ellipsizeMode='tail'>
+                                {item.name} | {item.quantity} * {item.price}
+                            </Text>
+                            <View style={styles.listItemActions}>
+                                {/* edit button */}
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        const check = editingId === item.id ? null : item.id;
+                                        setEditingId(check);
+                                        if (check){
+                                            setEditItemName(item.name);
+                                            setEditItemPrice(String(item.price));
+                                            setEditItemQuantity(String(item.quantity));
+                                        }
+                                    }}
+                                >
+                                    <Text style={styles.linkEdit}>{editingId === item.id ? 'Close' : 'Edit'}</Text>
+                                </TouchableOpacity>
 
-                            {/* remove button */}
-                            <TouchableOpacity onPress={() => removeItem(item.id)}>
-                                <Text style={{color:'red'}}>Remove</Text>
-                            </TouchableOpacity>
+                                {/* remove button */}
+                                <TouchableOpacity onPress={() => removeItem(item.id)}>
+                                    <Text style={styles.linkRemove}>Remove</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
 
                         {/* edit button expanded*/}
                         {editingId === item.id && (
-                                <View style={{paddingVertical:8, gap:6}}>
-                                    <TextInput
-                                        placeholder='Name'
-                                        value={editItemName}
-                                        onChangeText={setEditItemName}
-                                        style={styles.textInputStyle}/>
-                                    <TextInput
-                                        placeholder='Price'
-                                        value={editItemPrice}
-                                        onChangeText={setEditItemPrice}
-                                        keyboardType='numeric'
-                                        style={styles.textInputStyle}/>
-                                    <TextInput
-                                        placeholder='Quantity'
-                                        value={editItemQuantity}
-                                        onChangeText={setEditItemQuantity}
-                                        keyboardType='numeric'
-                                        style={styles.textInputStyle}/>
-                                        <View style={{flexDirection:'row' ,gap:10}}>
-                                            <Button
-                                                title='Save'
-                                                onPress={() => {editItem(item.id); setEditingId(null);}}
-                                                disabled={!editValid}
-                                            />
-                                            <Button
-                                                title='Cancel'
-                                                onPress={() => {setEditingId(null);}}
-                                                color="red"
-                                            />
-                                            
-                                        </View>
+                            <View style={styles.editSection}>
+                                <TextInput
+                                    placeholder='Name'
+                                    value={editItemName}
+                                    onChangeText={setEditItemName}
+                                    style={styles.textInputStyle}/>
+                                <TextInput
+                                    placeholder='Price'
+                                    value={editItemPrice}
+                                    onChangeText={setEditItemPrice}
+                                    keyboardType='numeric'
+                                    style={styles.textInputStyle}/>
+                                <TextInput
+                                    placeholder='Quantity'
+                                    value={editItemQuantity}
+                                    onChangeText={setEditItemQuantity}
+                                    keyboardType='numeric'
+                                    style={styles.textInputStyle}/>
+                                <View style={styles.editButtonsRow}>
+                                    <Button
+                                        title='Save'
+                                        onPress={() => {editItem(item.id); setEditingId(null);}}
+                                        disabled={!editValid}
+                                    />
+                                    <Button
+                                        title='Cancel'
+                                        onPress={() => {setEditingId(null);}}
+                                        color="red"
+                                    />
                                 </View>
-                            )}
+                            </View>
+                        )}
                     </View>
                 )}
             />

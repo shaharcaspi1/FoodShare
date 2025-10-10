@@ -22,35 +22,34 @@ export default function HomeScreen() {
     const assignVaild = (people.length !== 0 && items.length !== 0);
     const splitVaild = (people.length !== 0 && items.length !== 0 && assignments.length == items.length);
     
-
     // return home screen
     // right now button to each screen, UI to be changed
     return (
-        <View>
-            <Text style={styles.homeScreenHeader}>
+        <View style={styles.homeContainer}>
+            <Text style={[styles.header, styles.centerText]}>
                 Welcome to FoodShare,{"\n"}
                 an app to help you figure out the pays{"\n"}
                 at the end of the meal,{"\n"}
                 without open the calculator
             </Text>
             
-            <View style={styles.homeScreenButton}>
+            <View style={styles.buttonContainer}>
                 <Button title="Add Items"
                 onPress={() => navigation.navigate('Items')}
                 />
             </View>
-            <View style={styles.homeScreenButton}>
+            <View style={styles.buttonContainer}>
                 <Button title="Add Friends"
                 onPress={() => navigation.navigate('People')}
                 />
             </View>
-            <View style={styles.homeScreenButton}>
+            <View style={styles.buttonContainer}>
                 <Button title="Assign"
                 onPress={() => navigation.navigate('Assign')}
                 disabled={!assignVaild}
                 />
             </View>
-            <View style={styles.homeScreenButton}>
+            <View style={styles.buttonContainer}>
                 <Button title="Split"
                 onPress={() => navigation.navigate('Result')}
                 disabled={!splitVaild}

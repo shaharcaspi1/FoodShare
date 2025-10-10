@@ -39,7 +39,7 @@ export default function PeopleScreen(){
     
     // return screen
     return (
-        <View style={styles.peopleParent}>
+        <View style={styles.screenContainer}>
                 <Text style={styles.header}>
                     Add Friends
                 </Text>
@@ -47,7 +47,7 @@ export default function PeopleScreen(){
                     placeholder = "Enter Friend's name"
                     value = {name}
                     onChangeText={setName}
-                    style = {{borderWidth:1, padding:8, borderRadius:6}}
+                    style={styles.textInputStyle}
                 />
             <Button title='Add friend' onPress={addPerson} disabled={!valid} />
 

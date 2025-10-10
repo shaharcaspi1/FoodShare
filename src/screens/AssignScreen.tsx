@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Alert} from 'react-native';
+import { View, Text, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
 import { useApp } from '../state/AppContext';
+import { styles } from '../models/styles';
 
 export default function AssignScreen() {
     // import global vars
@@ -9,8 +10,8 @@ export default function AssignScreen() {
     // check assignments is possible
     if (items.length == 0 || people.length == 0){
         return (
-            <View style = {{flex:1, justifyContent:'center', padding:20}}>
-                <Text style = {{fontSize:18, textAlign:'center'}}>
+            <View style={styles.emptyStateContainer}>
+                <Text style={styles.emptyStateText}>
                     {items.length == 0
                     ? "Add items before assigning."
                     : "Add people before assigning."}
@@ -66,35 +67,29 @@ export default function AssignScreen() {
         const selectedCount = itemAssign ? Object.keys(itemAssign.shares).length : 0;
 
         return (
-            <View style = {{borderWidth:1, borderRadius:12, padding:12, marginBottom:12}}>
-                <View style = {{flexDirection: "row",justifyContent:"space-between",marginBottom:8}}>
-                    <Text style={{fontSize: 16,fontWeight:"600"}}>
+            <View style={styles.itemCard}>
+                <View style={styles.itemCardHeaderRow}>
+                    <Text style={styles.itemCardTitle}>
                         {name}{"\n"}
-                        <Text style = {{fontSize: 12, fontWeight:"normal"}}>{price} * {quantity}</Text>
+                        <Text style={styles.itemCardSubtitle}>{price} * {quantity}</Text>
                     </Text>
-                    <Text style = {{opacity: 0.7}}>{selectedCount} selected</Text>
-                </View> 
-            <View style = {{flexDirection:"row", gap:8, flexWrap:"wrap"}}>
+                    <Text style={styles.itemCardSelectedCount}>{selectedCount} selected</Text>
+                </View>
+            <View style={styles.chipRow}>
                 {people.map(p => {
                     const isOn = !!itemAssign?.shares[p.id];
                     return (
                         <TouchableOpacity
                         key = {p.id}
                         onPress={() => togglePerson(id,p.id)}
-                        style = {{
-                            borderWidth:1,
-                            borderRadius: 20,
-                            paddingVertical: 6,
-                            paddingHorizontal: 12,
-                            backgroundColor: isOn ? "rgba(0,0,0,0.08)" : "transparent"
-                        }}
+                        style={[styles.chip, isOn && styles.chipOn]}
                         >
                             <Text>{p.name}</Text>
                         </TouchableOpacity>
                     )
                 })}
             </View>
-            
+
 
             </View> 
         )
@@ -102,8 +97,8 @@ export default function AssignScreen() {
     
     // return screen
     return (
-        <View style = {{flex:1,padding:16}}>
-            <Text style = {{fontSize:22, marginBottom:10}}>Assign people to items</Text>
+        <View style={styles.screenContainer}>
+            <Text style={[styles.header, styles.sectionSpacing]}>Assign people to items</Text>
             <FlatList
                 data={items}
                 keyExtractor = {(i) => i.id}
