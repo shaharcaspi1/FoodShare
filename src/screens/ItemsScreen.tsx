@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Alert, Image
 import { useApp } from '../state/AppContext';
 import { styles } from '../models/styles'
 import { Item } from '../models/types';
-import { pickImage } from '../util/pickImage';
+import { pickImage, captureImage} from '../util/pickImage';
 import uploadReceipt from '../api/receipt';
 
 
@@ -83,7 +83,7 @@ export default function ItemsScreen() {
     const [busy, setBusy] = useState<'idle'|'picking'|'uploading'|'parsing'>('idle');
     const [previewUri, setPreviewUri] = useState<string | null>(null);
 
-    const onScanPress = async () => {
+    const onScanGalleryPress = async () => {
         try {
             setBusy('picking');
             const picked = await pickImage();
@@ -105,14 +105,6 @@ export default function ItemsScreen() {
             
             setItems(prev => [...prev, ...newScaned]);
 
-            // for (const i of parsed) {
-            //     const newItem = {id: Date.now().toString(),
-            //                     name: i.name,
-            //                     price: i.price, 
-            //                     quantity: i.qty}
-            //     setItems(prev => [...prev, newItem]);
-            // }
-
             Alert.alert('Imported', `Added ${parsed.length} item(s).`);
             } catch (e: any) {
                 console.error(e);
@@ -123,7 +115,36 @@ export default function ItemsScreen() {
         }
 
     
-
+        const onScanCameraPress = async () => {
+            try {
+                setBusy('picking');
+                const picked = await captureImage();
+                if (!picked) {(setBusy('idle')); return;}
+                
+                setPreviewUri(picked);
+    
+                setBusy('uploading');
+    
+                setBusy('parsing');
+                const {items: parsed} = await uploadReceipt(picked)
+    
+                const newScaned = parsed.map((i,index) =>({
+                    id: Date.now().toString() + String(index),
+                    name: i.name,
+                    price: i.price,
+                    quantity: i.qty,
+                }))
+                
+                setItems(prev => [...prev, ...newScaned]);
+    
+                Alert.alert('Imported', `Added ${parsed.length} item(s).`);
+                } catch (e: any) {
+                    console.error(e);
+                    Alert.alert('Import failed', e?.message ?? 'Unknown error');
+                } finally {
+                    setBusy('idle');
+                }
+            }
     // return the screen with all the above implemented
     return (
         <View style={styles.screenContainer}>
@@ -131,13 +152,23 @@ export default function ItemsScreen() {
             <Text style={styles.header}>
                 Add items
             </Text>
+            <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                {previewUri === null &&
+                (<Button title='Scan from gallery' onPress={onScanGalleryPress}/>)}
 
-            <Button title='Add from picture' onPress={onScanPress}/>
-            {busy !== 'idle' && <ActivityIndicator/>}
-            {previewUri && (
-                <Image source={{ uri: previewUri }} style={styles.previewImage} />
-            )}
-
+                {previewUri === null &&
+                (<Button title='Scan from picture' onPress={onScanCameraPress}/>)}
+                {busy !== 'idle' && <ActivityIndicator/>}
+                
+                <View style={{flexDirection:"column", justifyContent:"center", flex:1}}>
+                    {previewUri && (
+                        <Image source={{ uri: previewUri }} style={styles.previewImage} />
+                    )}
+                    {previewUri && (
+                        <Button title='Retry scan' onPress={() => setPreviewUri(null)}/>
+                    )}
+                </View>
+            </View>
             <TextInput 
             placeholder = 'Item name'
             value = {itemName}
