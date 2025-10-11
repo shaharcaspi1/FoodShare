@@ -5,7 +5,6 @@ export type ReceiptExtractResponse = { items: { name: string; qty: number; price
 export type ApiError = { error: { code: string; message: string } };
 
 const API_BASE = process.env.EXPO_PUBLIC_API_BASE || process.env.API_BASE;
-console.log(API_BASE)
 
 export default async function uploadReceipt(uri:string): Promise<ReceiptExtractResponse> {
     // Best-effort filename & mime

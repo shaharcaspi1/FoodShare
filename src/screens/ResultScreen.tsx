@@ -1,8 +1,32 @@
 import { computeSplit } from '../logic/computeSplit';
 import { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, Share } from 'react-native';
 import { useApp } from '../state/AppContext';
 import { styles } from '../models/styles';
+
+const shareList = async (listToShare: string) => {
+    try {
+        const result = await Share.share({
+            message: listToShare
+        });
+
+        if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+                console.log(`Shared with activity type: ${result.activityType}`)
+            } else {
+                console.log('Shared successfully.');
+            }
+        } else if (result.action === Share.dismissedAction) {
+            console.log('Share dismissed.')
+        }
+    } catch (err: unknown) {
+        if (err instanceof Error){
+            console.error('Error sharing:', err.message)
+        } else {
+            console.error('Error sharing:', err)
+        }
+    }
+}
 
 export default function ResultScreen() {
     // import global vars
@@ -14,16 +38,21 @@ export default function ResultScreen() {
     // create temporary tip useState variable
     const [tempTip,setTempTip] = useState(tip);
 
-    // crrate list with data
+    // create list with data
     const resultData = people.map(person => ({
         id: person.id,
         name: person.name,
         amount: totals[person.id] || 0
     }))
 
+    
+
     // create factor to add tip, and display data with tip factored
     const factor = 1 + (+tip || 0) / 100;
     const displayData = resultData.map(p => ({...p, amount: p.amount * factor}));
+
+    // list to share
+    const listToShare = displayData.map(person => (person.name +" "+ person.amount.toFixed(0))).join('\n');
 
     // check for valid tip and tempTip
     const numTip = Number(tip);
@@ -57,6 +86,7 @@ export default function ResultScreen() {
                 </View>
              )}>
             </FlatList>
+            <Button title='Share list' onPress={() => shareList(listToShare)}/>
             <Text style={styles.noteText}>Added tip {tip}%</Text>
         </View>
     )
